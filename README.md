@@ -1,6 +1,6 @@
 # ExTotp
 
-Fun project for generating Time-based on time passwords
+Fun project for generating Time-based one time passwords
 
 ## Installation
 
