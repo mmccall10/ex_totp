@@ -10,12 +10,31 @@ defmodule ExTotp.Application do
     children = [
       # Starts a worker by calling: ExTotp.Worker.start_link(arg)
       # {ExTotp.Worker, arg},
-      {ExTotp.Recalculate, [code: "fjdkfjlkajfkafjka;"]}
+      {DynamicSupervisor, name: ExTotp.TotpSupervisor, strategy: :one_for_one}
+      # {ExTotp.Recalculate, [code: "666F6F626172"]}
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html
     # for other strategies and supported options
     opts = [strategy: :one_for_one, name: ExTotp.Supervisor]
-    Supervisor.start_link(children, opts)
+    {:ok, pid} = Supervisor.start_link(children, opts)
+
+    codes = [
+      [code: "666F6F626172"],
+      [code: "666F6F626543"],
+      [code: "666F6F629876"]
+    ]
+
+    Enum.each(
+      codes,
+      fn code ->
+        DynamicSupervisor.start_child(
+          ExTotp.TotpSupervisor,
+          {ExTotp.Recalculate, code}
+        )
+      end
+    )
+
+    {:ok, pid}
   end
 end

@@ -8,7 +8,7 @@ defmodule ExTotp do
       secret
       |> String.replace(" ", "")
       |> String.upcase()
-      |> Base.decode32!()
+      |> Base.decode16!()
 
     # timenow - difference from no to next 30 seconds
     # Integer.floor_div(period) + 30 seconds * 30
